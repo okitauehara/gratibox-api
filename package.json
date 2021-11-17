@@ -5,12 +5,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test npx jest",
-    "start": "NODE_ENV=prod node src/server.js",
+    "test": "NODE_ENV=test npx jest -i",
+    "start": "NODE_ENV=prod NODE_TLS_REJECT_UNAUTHORIZED=0 node src/server.js",
     "start:dev": "NODE_ENV=dev npx nodemon src/server.js",
     "start:test": "NODE_ENV=test npx nodemon src/server.js",
     "deploy": "git push heroku main",
-    "test:watch": "NODE_ENV=test npx jest --watch"
+    "test:watch": "NODE_ENV=test npx jest -i --watch"
   },
   "author": "",
   "license": "ISC",
