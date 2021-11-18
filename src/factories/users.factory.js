@@ -14,10 +14,30 @@ const invalidFakeUserSignUp = {
   email: faker.internet.email(),
 };
 
+const fakeUserSignIn = {
+  email: fakeUserSignUp.email,
+  password: fakeUserSignUp.password,
+};
+
+const fakeUserNotRegistered = {
+  email: faker.internet.email(),
+  password: faker.internet.password(),
+};
+
+const wrongFakeUserSignIn = {
+  email: fakeUserSignUp.email,
+};
+
 const deleteUsers = async () => connection.query('DELETE FROM users;');
+
+const deleteSessions = async () => connection.query('DELETE FROM sessions;');
 
 export {
   fakeUserSignUp,
   invalidFakeUserSignUp,
+  fakeUserSignIn,
+  fakeUserNotRegistered,
+  wrongFakeUserSignIn,
   deleteUsers,
+  deleteSessions,
 };
