@@ -8,4 +8,6 @@ router.get('/', (req, res) => {
   });
 });
 
+router.post('/sign-up', postSignUp);
+
 export default router;
