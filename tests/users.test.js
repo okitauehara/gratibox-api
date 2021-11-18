@@ -31,6 +31,7 @@ describe('POST /sign-in', () => {
   test('should return status 200 if the user was successfully logged', async () => {
     const result = await supertest(app).post('/sign-in').send(F.fakeUserSignIn);
     expect(result.status).toEqual(200);
+    expect(result.body).toHaveProperty('name');
     expect(result.body).toHaveProperty('token');
   });
 

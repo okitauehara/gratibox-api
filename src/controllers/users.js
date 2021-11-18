@@ -62,6 +62,7 @@ async function postSignIn(req, res) {
 
     return res.status(200).send({
       name: user.name,
+      planId: user.plan_id,
       token,
     });
   } catch {
