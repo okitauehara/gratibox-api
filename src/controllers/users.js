@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import connection from '../database/connection.js';
-import signUpSchema from '../schemas/signUpSchema.js';
+import { signUpSchema, signInSchema } from '../schemas/accessSchema.js';
 
 async function postSignUp(req, res) {
   const { name, email, password } = req.body;
@@ -33,6 +33,12 @@ async function postSignIn(req, res) {
   const { email, password } = req.body;
 
   try {
+    const { error } = signInSchema.validate({ email, password });
+
+    if (error) {
+      return res.sendStatus(400);
+    }
+
     const emailCheck = await connection.query('SELECT * from users WHERE email = $1;', [email]);
     if (emailCheck.rowCount === 0) {
       return res.sendStatus(401);
@@ -49,12 +55,13 @@ async function postSignIn(req, res) {
 
     await connection.query(`
       INSERT INTO sessions
-        (users_id, token)
+        (user_id, token)
       VALUES
         ($1, $2)
     ;`, [user.id, token]);
 
     return res.status(200).send({
+      name: user.name,
       token,
     });
   } catch {
