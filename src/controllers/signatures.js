@@ -64,7 +64,7 @@ export default async function postSignature(req, res) {
     VALUES
       ($1, $2, $3)`, [userId, planId, deliveryInfosId]);
 
-    return res.sendStatus(200);
+    return res.sendStatus(201);
   } catch {
     return res.status(500).send({
       message: 'Não foi possível assinar o plano.',
