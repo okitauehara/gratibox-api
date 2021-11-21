@@ -2,7 +2,7 @@
 import connection from '../database/connection.js';
 import signatureSchema from '../schemas/signatureSchema.js';
 
-export default async function postSignature(req, res) {
+async function postSignature(req, res) {
   const {
     delivery_date, products, cep, number, full_name,
   } = req.body;
@@ -22,6 +22,10 @@ export default async function postSignature(req, res) {
     if (error) {
       return res.status(400).send(error);
     }
+
+    await connection.query(`
+    SET CLIENT_ENCODING = 'UTF8'
+    `);
 
     const getSession = await connection.query('SELECT * FROM sessions WHERE token = $1', [token]);
     if (getSession.rowCount === 0) {
@@ -71,3 +75,57 @@ export default async function postSignature(req, res) {
     });
   }
 }
+
+async function getSignatures(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace('Bearer ', '');
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  try {
+    const getSession = await connection.query('SELECT * FROM sessions WHERE token = $1', [token]);
+    if (getSession.rowCount === 0) {
+      return res.sendStatus(404);
+    }
+    const session = getSession.rows[0];
+
+    const getUser = await connection.query('SELECT * FROM users WHERE id = $1', [session.user_id]);
+    const user = getUser.rows[0];
+
+    const getPlan = await connection.query('SELECT * FROM plans WHERE id = $1', [user.plan_id]);
+    const plan = getPlan.rows[0].name;
+
+    const result = await connection.query(`
+      SELECT
+        signatures.signature_date,
+        users_products.product_id,
+        dates.date
+      FROM signatures
+      JOIN users_products
+        ON users_products.user_id = $1
+      JOIN delivery_infos
+        ON delivery_infos.id = delivery_id
+      JOIN dates
+        ON dates.id = delivery_infos.date_id
+      WHERE signatures.user_id = $1
+    `, [user.id]);
+    const signature = {
+      signature_date: result.rows[0].signature_date,
+      products: result.rows.map((value) => value.product_id),
+      plan,
+      delivery_date: result.rows[0].date,
+    };
+    return res.status(200).send(signature);
+  } catch {
+    return res.status(500).send({
+      message: 'Não foi possível retornar as informações do plano',
+    });
+  }
+}
+
+export {
+  postSignature,
+  getSignatures,
+};
