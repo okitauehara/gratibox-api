@@ -54,6 +54,7 @@ describe('GET /subscriptions', () => {
     expect(result.body).toHaveProperty('signature_date');
     expect(result.body).toHaveProperty('products');
     expect(result.body).toHaveProperty('plan');
+    expect(result.body).toHaveProperty('delivery_date');
   });
 
   test('should return status 404 if the request token does not belong to any user', async () => {
