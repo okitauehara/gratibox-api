@@ -15,5 +15,6 @@ router.post('/sign-up', postSignUp);
 router.post('/sign-in', postSignIn);
 
 router.post('/subscriptions/:planId', ensureAuth, postSignature);
+// router.get('/subscriptions', ensureAuth, getSignatures);
 
 export default router;

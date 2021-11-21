@@ -2,7 +2,7 @@
 import connection from '../database/connection.js';
 import signatureSchema from '../schemas/signatureSchema.js';
 
-export default async function postSignature(req, res) {
+async function postSignature(req, res) {
   const {
     delivery_date, products, cep, number, full_name,
   } = req.body;
@@ -71,3 +71,53 @@ export default async function postSignature(req, res) {
     });
   }
 }
+
+async function getSignatures(req, res) {
+  const { authorization } = req.headers;
+  const token = authorization?.replace('Bearer ', '');
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  try {
+    const getSession = await connection.query('SELECT * FROM sessions WHERE token = $1', [token]);
+    if (getSession.rowCount === 0) {
+      return res.sendStatus(404);
+    }
+    const session = getSession.rows[0];
+
+    const getUser = await connection.query('SELECT * FROM users WHERE id = $1', [session.user_id]);
+    const user = getUser.rows[0];
+
+    const getPlan = await connection.query('SELECT * FROM plans WHERE id = $1', [user.plan_id]);
+    const plan = getPlan.rows[0].name;
+
+    const result = await connection.query(`
+      SELECT
+        signatures.signature_date,
+        products.name
+      FROM signatures
+      JOIN users_products
+        ON users_products.user_id = $1
+      JOIN products
+        ON products.id = product_id
+      WHERE signatures.user_id = $1
+    `, [user.id]);
+    const signature = {
+      ...result.rows[0],
+      products: result.rows.map((value) => value.name),
+      plan,
+    };
+    return res.status(200).send(signature);
+  } catch {
+    return res.status(500).send({
+      message: 'Não foi possível retornar as informações do plano',
+    });
+  }
+}
+
+export {
+  postSignature,
+  getSignatures,
+};
