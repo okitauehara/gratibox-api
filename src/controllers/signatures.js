@@ -105,7 +105,7 @@ async function getSignatures(req, res) {
       WHERE signatures.user_id = $1
     `, [user.id]);
     const signature = {
-      ...result.rows[0],
+      signature_date: new Date(result.rows[0].signature_date).toLocaleDateString('pt-BR'),
       products: result.rows.map((value) => value.name),
       plan,
     };
