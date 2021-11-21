@@ -96,18 +96,24 @@ async function getSignatures(req, res) {
     const result = await connection.query(`
       SELECT
         signatures.signature_date,
-        products.name
+        products.name,
+        dates.date
       FROM signatures
       JOIN users_products
         ON users_products.user_id = $1
       JOIN products
         ON products.id = product_id
+      JOIN delivery_infos
+        ON delivery_infos.id = delivery_id
+      JOIN dates
+        ON dates.id = delivery_infos.date_id
       WHERE signatures.user_id = $1
     `, [user.id]);
     const signature = {
       signature_date: new Date(result.rows[0].signature_date).toLocaleDateString('pt-BR'),
       products: result.rows.map((value) => value.name),
       plan,
+      delivery_date: result.rows[0].date,
     };
     return res.status(200).send(signature);
   } catch {
