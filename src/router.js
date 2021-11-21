@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { postSignUp, postSignIn } from './controllers/users.js';
 import ensureAuth from './middlewares/ensureAuth.js';
-import postSignature from './controllers/signatures.js';
+import { postSignature, getSignatures } from './controllers/signatures.js';
 
 const router = Router();
 
@@ -15,6 +15,6 @@ router.post('/sign-up', postSignUp);
 router.post('/sign-in', postSignIn);
 
 router.post('/subscriptions/:planId', ensureAuth, postSignature);
-// router.get('/subscriptions', ensureAuth, getSignatures);
+router.get('/subscriptions', ensureAuth, getSignatures);
 
 export default router;
