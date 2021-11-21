@@ -23,6 +23,10 @@ async function postSignature(req, res) {
       return res.status(400).send(error);
     }
 
+    await connection.query(`
+    SET CLIENT_ENCODING = 'UTF8'
+    `);
+
     const getSession = await connection.query('SELECT * FROM sessions WHERE token = $1', [token]);
     if (getSession.rowCount === 0) {
       return res.sendStatus(404);
@@ -96,13 +100,11 @@ async function getSignatures(req, res) {
     const result = await connection.query(`
       SELECT
         signatures.signature_date,
-        products.name,
+        users_products.product_id,
         dates.date
       FROM signatures
       JOIN users_products
         ON users_products.user_id = $1
-      JOIN products
-        ON products.id = product_id
       JOIN delivery_infos
         ON delivery_infos.id = delivery_id
       JOIN dates
@@ -111,7 +113,7 @@ async function getSignatures(req, res) {
     `, [user.id]);
     const signature = {
       signature_date: result.rows[0].signature_date,
-      products: result.rows.map((value) => value.name),
+      products: result.rows.map((value) => value.product_id),
       plan,
       delivery_date: result.rows[0].date,
     };
