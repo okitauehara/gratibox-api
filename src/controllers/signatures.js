@@ -61,12 +61,14 @@ async function postSignature(req, res) {
         AND full_name = $4`, [cep, number, dateId, full_name]);
     const deliveryInfosId = getDeliveryInfos.rows[0].id;
 
+    const signatureDate = new Date();
+
     await connection.query('UPDATE users SET plan_id = $1 WHERE id = $2', [planId, userId]);
     await connection.query(`
     INSERT INTO signatures
-      (user_id, plan_id, delivery_id)
+      (user_id, plan_id, delivery_id, signature_date)
     VALUES
-      ($1, $2, $3)`, [userId, planId, deliveryInfosId]);
+      ($1, $2, $3, $4)`, [userId, planId, deliveryInfosId, signatureDate]);
 
     return res.sendStatus(201);
   } catch {
