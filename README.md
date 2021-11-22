@@ -93,10 +93,10 @@ The following tools were used in the construction of the project-api:
 
 -   **[Express](https://expressjs.com/)**
 -   **[CORS](https://expressjs.com/en/resources/middleware/cors.html)**
--   **[bcrypt](https://github.com/kelektiv/node.bcrypt.js)**
+-   **[Bcrypt](https://github.com/kelektiv/node.bcrypt.js)**
 -   **[NTL](https://github.com/ruyadorno/ntl)**
--   **[pg](https://github.com/brianc/node-postgres)**
--   **[dotENV](https://github.com/motdotla/dotenv)**
+-   **[Pg](https://github.com/brianc/node-postgres)**
+-   **[DotENV](https://github.com/motdotla/dotenv)**
 -   **[UUID](https://github.com/uuidjs/uuid)**
 -   **[Faker](https://github.com/Marak/Faker.js)**
 -   **[Joi](https://github.com/hapijs/joi)**
