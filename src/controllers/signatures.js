@@ -23,10 +23,6 @@ async function postSignature(req, res) {
       return res.status(400).send(error);
     }
 
-    await connection.query(`
-    SET CLIENT_ENCODING = 'UTF8'
-    `);
-
     const getSession = await connection.query('SELECT * FROM sessions WHERE token = $1', [token]);
     if (getSession.rowCount === 0) {
       return res.sendStatus(404);
