@@ -28,6 +28,11 @@ describe('POST /sign-up', () => {
 });
 
 describe('POST /sign-in', () => {
+  afterAll(async () => {
+    await U.deleteSessions();
+    await U.deleteUsers();
+  });
+
   test('should return status 200 if the user was successfully logged', async () => {
     const result = await supertest(app).post('/sign-in').send(U.fakeUserSignIn);
     expect(result.status).toEqual(200);
@@ -43,5 +48,22 @@ describe('POST /sign-in', () => {
   test('should return status 400 if the request did not passed the joi validation', async () => {
     const result = await supertest(app).post('/sign-in').send(U.invalidFakeUserSignIn);
     expect(result.status).toEqual(400);
+  });
+});
+
+describe('POST /sign-out', () => {
+  beforeAll(async () => {
+    await U.createFakeUser();
+    await U.createFakeSession();
+  });
+
+  test('should return status 200 if the user was successfully logged out', async () => {
+    const result = await supertest(app).delete('/sign-out').set('Authorization', `Bearer ${U.fakeSession.token}`);
+    expect(result.status).toEqual(200);
+  });
+
+  test('should return status 401 if the request was missing token', async () => {
+    const result = await supertest(app).delete('/sign-out');
+    expect(result.status).toEqual(401);
   });
 });
