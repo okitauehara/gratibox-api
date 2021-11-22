@@ -43,7 +43,7 @@ CREATE DATABASE gratibox;
 \c gratibox
 
 ```
-Now, just run the commands listed in dump.sql
+Now, just run the commands listed in <a href="https://github.com/okitauehara/gratibox-api/blob/main/dump.sql">dump.sql</a>
 
 ---
 
@@ -73,8 +73,7 @@ $ cd gratibox-api
 // Install the dependencies
 $ npm install
 
-// Create a environment variable
-Create a .env.dev file and fill it using your environment variables following the .env.example
+// Create a .env.dev file and fill it using your environment variables following the .env.example
 
 // Run the application in development mode
 $ ntl -> start:dev
@@ -82,6 +81,7 @@ $ ntl -> start:dev
 // The server will start at port: 4000
 
 ```
+You can find the .env.example <a href="https://github.com/okitauehara/gratibox-api/blob/main/.env.example">here</a>
 
 ---
 
