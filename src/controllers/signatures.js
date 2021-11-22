@@ -23,10 +23,6 @@ async function postSignature(req, res) {
       return res.status(400).send(error);
     }
 
-    await connection.query(`
-    SET CLIENT_ENCODING = 'UTF8'
-    `);
-
     const getSession = await connection.query('SELECT * FROM sessions WHERE token = $1', [token]);
     if (getSession.rowCount === 0) {
       return res.sendStatus(404);
@@ -34,14 +30,14 @@ async function postSignature(req, res) {
     const session = getSession.rows[0];
 
     const getUser = await connection.query('SELECT * FROM users WHERE id = $1', [session.user_id]);
-    const userId = getUser.rows[0].id;
+    const user = getUser.rows[0];
 
     products.forEach(async (product) => {
       await connection.query(`
       INSERT INTO users_products
         (user_id, product_id)
       VALUES
-        ($1, $2)`, [userId, Number(product)]);
+        ($1, $2)`, [user.id, Number(product)]);
     });
 
     const getDate = await connection.query('SELECT * FROM dates WHERE date = $1', [delivery_date]);
@@ -63,14 +59,18 @@ async function postSignature(req, res) {
 
     const signatureDate = new Date();
 
-    await connection.query('UPDATE users SET plan_id = $1 WHERE id = $2', [planId, userId]);
+    await connection.query('UPDATE users SET plan_id = $1 WHERE id = $2', [planId, user.id]);
     await connection.query(`
     INSERT INTO signatures
       (user_id, plan_id, delivery_id, signature_date)
     VALUES
-      ($1, $2, $3, $4)`, [userId, planId, deliveryInfosId, signatureDate]);
+      ($1, $2, $3, $4)`, [user.id, planId, deliveryInfosId, signatureDate]);
 
-    return res.sendStatus(201);
+    return res.status(201).send({
+      name: user.name,
+      planId: Number(planId),
+      token,
+    });
   } catch {
     return res.status(500).send({
       message: 'Não foi possível assinar o plano.',
