@@ -12,7 +12,7 @@
 
 <p align="center">
  <a href="#about">About</a> •
- <a href="#layout">Database Layout</a> • 
+ <a href="#database-layout">Database Layout</a> • 
  <a href="#how-it-works">How it works</a> • 
  <a href="#pre-requisites">Pre-requisites</a> • 
  <a href="#tech-stack">Tech Stack</a> • 
