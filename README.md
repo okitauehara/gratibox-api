@@ -17,7 +17,7 @@
  <a href="#pre-requisites">Pre-requisites</a> • 
  <a href="#tech-stack">Tech Stack</a> • 
  <a href="#how-to-contribute">How to contribute</a> • 
- <a href="#author">Author</a> • 
+ <a href="#author">Author</a>
 </p>
 
 
